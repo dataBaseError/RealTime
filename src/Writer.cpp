@@ -52,6 +52,7 @@ void * Writer::run(void *param) {
 
 void Writer::process() {
 	string message = buffer.front();
+	cout << "Sending to socket: " << message << endl;
 	send(this->socket_descriptor, message.c_str(), message.length(), 0);
 	buffer.pop();
 }
