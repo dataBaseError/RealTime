@@ -64,7 +64,10 @@ int main(int argc, char** argv) {
 
     unsigned int currentDestination = 0;
 
-    vector<vector<string> > schedule { {TrainController::STATION_A, TrainController::FORWARD}, {TrainController::STATION_B, TrainController::BACKWARD} };
+    vector<vector<string> > schedule {
+        {TrainController::STATION_A, TrainController::FORWARD},
+        {TrainController::STATION_B, TrainController::BACKWARD}
+    };
 
     int stationCounter = 0;
 
@@ -114,7 +117,6 @@ int main(int argc, char** argv) {
 
     // Begin main control loop:
     while (true) {
-
 		direction = schedule[currentDestination][0];
 		destination = schedule[currentDestination][1];
 
@@ -177,7 +179,7 @@ int main(int argc, char** argv) {
 
 			currentDestination++;
 
-			if(currentDestination >= schedule.size()) {
+			if (currentDestination >= schedule.size()) {
 				break;
 			}
 
