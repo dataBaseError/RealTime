@@ -19,10 +19,10 @@
 #define MAIN_HPP_
 
 
-#include <arpa/inet.h>
-#include <sys/socket.h>
-#include <netdb.h>     // gethostbyname, hostent
-#include <string.h>    // bzero, memmove
+#include <arpa/inet.h>  // htons
+#include <sys/socket.h> // socket
+#include <netdb.h>      // gethostbyname, hostent
+#include <string.h>     // bzero, memmove
 
 #include <Reader.hpp>
 #include <TrainController.hpp>
