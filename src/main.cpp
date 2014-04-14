@@ -60,11 +60,11 @@ int main(int argc, char *argv[])
 	//Put the following into the buffer, and notify the writer thread:
 	w.sendCommand("request(100,view)\n");
 
-	Begin main control loop:
+	//Begin main control loop:
 	for(;;){
 		//Check if we've received something from the socket.
 		//Output it to the console.
-		cout << r->readCommand() << endl;
+		cout << r.readCommand() << endl;
 	}
 
 	//Join and release the reader thread.
