@@ -21,6 +21,7 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include <sys/socket.h>
 
 #include <atomic>
 #include <pthread.h>
