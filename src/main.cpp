@@ -5,7 +5,9 @@
 #include <Writer.hpp>
 #include <Reader.hpp>
 #include <unistd.h>
-#include <sstream>
+//#include <sstream>
+
+#define MAX_BUFFER_SIZE 256
 
 int main(int argc, char *argv[])
 {
@@ -62,9 +64,9 @@ int main(int argc, char *argv[])
 	}
 
 	//Instantiate reader thread here; bind to connected socket.
-	Reader r;
+	Reader r(s, MAX_BUFFER_SIZE);
 	//Instantiate writer thread here; bind to connected socket.
-	Writer w;
+	Writer w(s, MAX_BUFFER_SIZE);
 
 	//Signal the writer thread to subscribe to the events.
 	//Put the following into the buffer, and notify the writer thread:
