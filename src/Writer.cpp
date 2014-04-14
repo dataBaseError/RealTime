@@ -21,8 +21,6 @@ Writer::Writer() : killThread(false){
 
 	pthread_mutex_init(&emptyMutex,0);
 	pthread_cond_init(&empty, 0);
-	//pthread_mutex_init(&runMutex,0);
-	//pthread_cond_init(&available, 0);
 	pthread_t thread1;
 	pthread_create(&thread1, 0, run, (void *) this);
 }
@@ -33,6 +31,7 @@ void * Writer::run(void *param) {
 	while(!mt->killThread) {
 
 		pthread_mutex_lock(&mt->emptyMutex);
+
 		if(mt->buffer.empty()) {
 			pthread_cond_wait(&mt->empty, &mt->emptyMutex);
 		}
@@ -49,7 +48,10 @@ void * Writer::run(void *param) {
 }
 
 void Writer::process() {
+	// Use to access the first element
+	//buffer.front();
 
+	buffer.pop();
 }
 
 void Writer::release() {

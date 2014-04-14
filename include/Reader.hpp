@@ -1,6 +1,6 @@
 
-#ifndef WRITER_HPP_
-#define WRITER_HPP_
+#ifndef READER_HPP_
+#define READER_HPP_
 
 #include <iostream>
 #include <string>
@@ -8,23 +8,24 @@
 
 #include <atomic>
 #include <pthread.h>
+#include <unistd.h>
 
 using namespace std;
 
-class Writer {
+class Reader {
 
 public:
 
 	std::atomic<bool > killThread;
-	queue<string > buffer;
-	//std::atomic<std::string* > buffer;
-	//std::atomic<int> activeCount;
-	pthread_mutex_t emptyMutex;
-	pthread_cond_t empty;
+	vector<string > value;
+	//pthread_mutex_t emptyMutex;
+	//pthread_cond_t empty;
+	pthread_mutex_t newValue;
+	pthread_cond_t available;
 
 	static const int MAX_PROCESSES = 1;
 
-	Writer();
+	Reader();
 
 	//virtual void run();
 	//void run();
@@ -33,8 +34,8 @@ public:
 	void release();
 
 private:
-	void process();
+	bool process();
 };
 
 
-#endif /* WRITER_HPP_ */
+#endif /* READER_HPP_ */
