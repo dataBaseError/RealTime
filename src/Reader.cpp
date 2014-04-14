@@ -1,6 +1,9 @@
 #include <Reader.hpp>
 
-Reader::Reader() : killThread(false){
+Reader::Reader(int socket_descriptor, int buffer_size) : killThread(false){
+
+	this->socket_descriptor = socket_descriptor;
+	this->buffer_size = buffer_size;
 
 	pthread_mutex_init(&newValue,0);
 	pthread_cond_init(&available, 0);
@@ -35,6 +38,13 @@ bool Reader::process() {
 	// return true if the value is valid
 	value[0] = "new";
 	return true;
+}
+
+string Reader::readCommand() {
+	pthread_mutex_lock(&newValue);
+	pthread_cond_wait(&available, &newValue);
+	pthread_mutex_unlock(&newValue);
+	return value[0];
 }
 
 void Reader::release() {

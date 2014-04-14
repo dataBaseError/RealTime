@@ -1,117 +1,60 @@
-// C Libraries
-#include <netdb.h>
-#include <unistd.h>
-#include <sstream>
-#include <string.h>
+#include <sys/types.h>
+#include <netinet/in.h>
 #include <sys/socket.h>
-
-// C++ Libraries
 
 #include <Writer.hpp>
 #include <Reader.hpp>
+#include <unistd.h>
 
-int open(const char* hostname, const uint16_t port) {
-    // The socket address
-    struct sockaddr_in address;
+//Declare the maximum buffer size for interacting with the socket.
+#define MAX_BUFFER_SIZE 256
 
-    // The socket host
-    struct hostent* host = gethostbyname(hostname);
-
-    // The socket's file descriptor
-    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
-
-    // allocate address with null bytes
-    bzero((char *) &address, sizeof(address));
-
-    // set the address format to IPV4
-    address.sin_family = AF_INET;
-
-    // set the host in the address
-    memmove((char *) &address.sin_addr.s_addr, (char *) host->h_addr, host->h_length);
-
-    // set the port in the address
-    address.sin_port = htons(port);
-
-    // connect to the socket
-    connect(sockfd, (struct sockaddr *) &address, sizeof(address));
-
-    // return the socket
-    return sockfd;
-}
-
-int main(int argc, char** argv) {
-    // hide warning: unused parameter
-    (void) argc;
-    (void) argv;
-
-	/*Writer w;
-	unsigned int i;
-	for(i = 0; i < 10; i++) {
-		stringstream sstm;
-		sstm << "hello " << i;
-		//cout << sstm.str() << endl;
-		w.buffer.push(sstm.str());
-		pthread_mutex_lock(&w.emptyMutex);
-		pthread_cond_signal(&w.empty);
-		pthread_mutex_unlock(&w.emptyMutex);
-
-	}
-
-
-	//usleep(1);
-	w.release();*/
-
-	/*Reader r;
-	unsigned int i;
-	for(i = 0; i < 10; i++) {
-		pthread_mutex_lock(&r.newValue);
-		pthread_cond_wait(&r.available, &r.newValue);
-		pthread_mutex_unlock(&r.newValue);
-
-		cout << "Value " << r.value[0] << endl;
-	}
-
-	r.release();*/
-
+int main(int argc, char *argv[])
+{
 	//Declare a socket instance here.
-	//struct sockaddr_in server;
-    //server.sin_port = htons(1234);
+	struct sockaddr_in server;
+	string address = "192.168.0.1";
+	server.sin_port = htons(1234);
+	inet_aton(address, &server.sin_addr.s_addr);
 
-	//const string address = "192.168.0.1";
-
-	//inet_aton(address.c_str(), &server.sin_addr.s_addr);
-
-	//int s = socket(AF_INET, SOCK_STREAM, 0);
-
-    std::string address = "192.168.0.1";
-    uint16_t port = 1234;
-
-    int s = open(address.c_str(), port);
-
+	//Open the socket. If it fails to bind, terminate.
+	int s = socket(AF_INET, SOCK_STREAM, 0);
 	if (s == -1) {
-		std::cout << "Invalid socket descriptor." << std::endl;
+		cout << "Invalid socket descriptor.";
 		return -1;
 	} else {
-		std::cout << "Socket bound." << std::endl;
+		cout << "Socket bound.";
 	}
 
-	std::cout << "Connecting to socket on address: " << address << " port: " << port << std::endl;
+	//Connect to the socket. If it fails to connect, terminate.
+	cout << "Connecting to socket on address: " << address << " port: "
+			<< server.sin_port << endl;
+	if (connect(s, (struct sockaddr *) &server, sizeof(server)) == -1) {
+		cout << "Socket connection failed.";
+		return -1;
+	}
 
 	//Instantiate reader thread here; bind to connected socket.
+	Reader r(s, MAX_BUFFER_SIZE);
 	//Instantiate writer thread here; bind to connected socket.
+	Writer w(s, MAX_BUFFER_SIZE);
 
 	//Signal the writer thread to subscribe to the events.
 	//Put the following into the buffer, and notify the writer thread:
-	//out = "request(100,view)\n";
-	//writerThread.notify();
+	w.sendCommand("request(100,view)\n");
 
-	//Begin main control loop:
-	//{
-	//	//Check if we've received something from the socket.
-		//The local buffer will contain it since the reader thread outputs directly into the buffer.
-		//cout << "RECEIVED COMMAND: " << endl;
-		//cout << buffer << endl;
-	//}
+	Begin main control loop:
+	for(;;){
+		//Check if we've received something from the socket.
+		//Output it to the console.
+		cout << r->readCommand() << endl;
+	}
+
+	//Join and release the reader thread.
+	r.release();
+	//Join and release the writer thread.
+	w.release();
+
 
 	return 0;
 }

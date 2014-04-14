@@ -17,7 +17,10 @@
 
 #include <Writer.hpp>
 
-Writer::Writer() : killThread(false) {
+Writer::Writer(int socket_descriptor, int buffer_size) : killThread(false){
+
+	this->socket_descriptor = socket_descriptor;
+	this->buffer_size = buffer_size;
 
 	pthread_mutex_init(&emptyMutex,0);
 	pthread_cond_init(&empty, 0);

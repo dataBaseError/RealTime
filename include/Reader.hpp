@@ -12,6 +12,9 @@
 
 class Reader {
 
+	int socket_descriptor;
+	int buffer_size;
+
 public:
 
 	std::atomic<bool > killThread;
@@ -23,11 +26,18 @@ public:
 
 	static const int MAX_PROCESSES = 1;
 
-	Reader();
+	Reader(int socket_descriptor, int buffer_size);
 
 	//virtual void run();
 	//void run();
 	static void *run(void *param);
+
+	/**
+	 * Read the response from the socket
+	 *
+	 * @return Any response message from the socket
+	 */
+	string readCommand();
 
 	void release();
 
