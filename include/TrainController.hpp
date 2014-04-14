@@ -28,6 +28,12 @@ class TrainController {
 private:
 	stringstream ss;
 
+    bool validateTrainId(string train_id);
+    bool validateStationId(string station_id);
+    bool validateCornerId(string corner_id);
+
+    void cleanStream();
+
 public:
 	static const string F1;
 	static const string F2;
@@ -54,12 +60,6 @@ public:
 	string setDirection(string direction);
 	string setSpeed(int speed);
 	string setSwitch(string corner_id, string station_id);
-
-    bool validateTrainId(string train_id);
-	bool validateStationId(string station_id);
-	bool validateCornerId(string corner_id);
-
-	void cleanStream();
 };
 
 #endif /* TRAINCONTROLLER_HPP_ */
