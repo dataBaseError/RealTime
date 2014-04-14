@@ -10,14 +10,12 @@
 #include <pthread.h>
 #include <unistd.h>
 
-using namespace std;
-
 class Reader {
 
 public:
 
 	std::atomic<bool > killThread;
-	vector<string > value;
+	std::vector<std::string > value;
 	//pthread_mutex_t emptyMutex;
 	//pthread_cond_t empty;
 	pthread_mutex_t newValue;

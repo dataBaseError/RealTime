@@ -1,14 +1,49 @@
-#include <sys/types.h>
-#include <netinet/in.h>
+// C Libraries
+#include <netdb.h>
+#include <unistd.h>
+#include <sstream>
+#include <string.h>
 #include <sys/socket.h>
+
+// C++ Libraries
 
 #include <Writer.hpp>
 #include <Reader.hpp>
-#include <unistd.h>
-#include <sstream>
 
-int main(int argc, char *argv[])
-{
+int open(const char* hostname, const uint16_t port) {
+    // The socket address
+    struct sockaddr_in address;
+
+    // The socket host
+    struct hostent* host = gethostbyname(hostname);
+
+    // The socket's file descriptor
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+    // allocate address with null bytes
+    bzero((char *) &address, sizeof(address));
+
+    // set the address format to IPV4
+    address.sin_family = AF_INET;
+
+    // set the host in the address
+    memmove((char *) &address.sin_addr.s_addr, (char *) host->h_addr, host->h_length);
+
+    // set the port in the address
+    address.sin_port = htons(port);
+
+    // connect to the socket
+    connect(sockfd, (struct sockaddr *) &address, sizeof(address));
+
+    // return the socket
+    return sockfd;
+}
+
+int main(int argc, char** argv) {
+    // hide warning: unused parameter
+    (void) argc;
+    (void) argv;
+
 	/*Writer w;
 	unsigned int i;
 	for(i = 0; i < 10; i++) {
@@ -39,27 +74,28 @@ int main(int argc, char *argv[])
 	r.release();*/
 
 	//Declare a socket instance here.
-	struct sockaddr_in server;
-	string address = "192.168.0.1";
-	server.sin_port = htons(1234);
-	inet_aton(address, &server.sin_addr.s_addr);
+	//struct sockaddr_in server;
+    //server.sin_port = htons(1234);
 
-	int s = socket(AF_INET, SOCK_STREAM, 0);
+	//const string address = "192.168.0.1";
+
+	//inet_aton(address.c_str(), &server.sin_addr.s_addr);
+
+	//int s = socket(AF_INET, SOCK_STREAM, 0);
+
+    std::string address = "192.168.0.1";
+    uint16_t port = 1234;
+
+    int s = open(address.c_str(), port);
 
 	if (s == -1) {
-		cout << "Invalid socket descriptor.";
+		std::cout << "Invalid socket descriptor." << std::endl;
 		return -1;
 	} else {
-		cout << "Socket bound.";
+		std::cout << "Socket bound." << std::endl;
 	}
 
-	cout << "Connecting to socket on address: " << address << " port: "
-			<< server.sin_port << endl;
-
-	if (connect(s, (struct sockaddr *) &server, sizeof(server)) == -1) {
-		cout << "Socket connection failed.";
-		return -1;
-	}
+	std::cout << "Connecting to socket on address: " << address << " port: " << port << std::endl;
 
 	//Instantiate reader thread here; bind to connected socket.
 	//Instantiate writer thread here; bind to connected socket.

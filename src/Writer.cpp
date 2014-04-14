@@ -17,7 +17,7 @@
 
 #include <Writer.hpp>
 
-Writer::Writer() : killThread(false){
+Writer::Writer() : killThread(false) {
 
 	pthread_mutex_init(&emptyMutex,0);
 	pthread_cond_init(&empty, 0);
