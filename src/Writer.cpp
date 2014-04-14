@@ -1,5 +1,5 @@
 /**
- * Copyright (C) 2014 Jonathan Gillett, Joseph Heron, Daniel Smullen
+ * Copyright (C) 2014 Jonathan Gillett, Joseph Heron, Khalil Fazal, Daniel Smullen
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,6 +17,7 @@
 
 #include <Writer.hpp>
 
+//Default constructor.
 Writer::Writer(int socket_descriptor, int buffer_size) : killThread(false){
 
 	this->socket_descriptor = socket_descriptor;
@@ -29,7 +30,6 @@ Writer::Writer(int socket_descriptor, int buffer_size) : killThread(false){
 }
 
 void * Writer::run(void *param) {
-
 	Writer *mt = ((Writer *) param);
 	while(!mt->killThread) {
 
