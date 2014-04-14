@@ -15,9 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <sys/types.h>
+#include <arpa/inet.h>
+#include <netdb.h>
 #include <netinet/in.h>
+#include <string.h>
 #include <sys/socket.h>
+#include <sys/types.h>
 
 #include <Writer.hpp>
 #include <Reader.hpp>
@@ -26,13 +29,44 @@
 //Declare the maximum buffer size for interacting with the socket.
 #define MAX_BUFFER_SIZE 256
 
-int main(int argc, char *argv[])
-{
+int open(const char* hostname, const uint16_t port) {
+    // The socket address
+    struct sockaddr_in address;
+
+    // The socket host
+    struct hostent* host = gethostbyname(hostname);
+
+    // The socket's file descriptor
+    int sockfd = socket(AF_INET, SOCK_STREAM, 0);
+
+    // allocate address with null bytes
+    bzero((char *) &address, sizeof(address));
+
+    // set the address format to IPV4
+    address.sin_family = AF_INET;
+
+    // set the host in the address
+    memmove((char *) &address.sin_addr.s_addr, (char *) host->h_addr, host->h_length);
+
+    // set the port in the address
+    address.sin_port = htons(port);
+
+    // connect to the socket
+    connect(sockfd, (struct sockaddr *) &address, sizeof(address));
+
+    // return the socket
+    return sockfd;
+}
+
+int main(int argc, char** argv) {
+    (void) argc;
+    (void) argv;
+
 	//Declare a socket instance here.
-	struct sockaddr_in server;
+	/*struct sockaddr_in server;
 	string address = "192.168.0.1";
 	server.sin_port = htons(1234);
-	inet_aton(address, &server.sin_addr.s_addr);
+	inet_aton(address., &server.sin_addr.s_addr);
 
 	//Open the socket. If it fails to bind, terminate.
 	int s = socket(AF_INET, SOCK_STREAM, 0);
@@ -49,7 +83,9 @@ int main(int argc, char *argv[])
 	if (connect(s, (struct sockaddr *) &server, sizeof(server)) == -1) {
 		cout << "Socket connection failed.";
 		return -1;
-	}
+	}*/
+
+    int s = open("192.168.0.1", 1234);
 
 	//Instantiate reader thread here; bind to connected socket.
 	Reader r(s, MAX_BUFFER_SIZE);
@@ -58,13 +94,13 @@ int main(int argc, char *argv[])
 
 	//Signal the writer thread to subscribe to the events.
 	//Put the following into the buffer, and notify the writer thread:
-	w.sendCommand("request(100,view)\n");
+	//w.sendCommand("request(100,view)\n");
 
-	Begin main control loop:
+	//Begin main control loop:
 	for(;;){
 		//Check if we've received something from the socket.
 		//Output it to the console.
-		cout << r->readCommand() << endl;
+		cout << r.readCommand() << endl;
 	}
 
 	//Join and release the reader thread.
