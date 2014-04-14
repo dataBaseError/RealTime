@@ -19,3 +19,8 @@
 *.exe
 *.out
 *.app
+
+# Ignore eclipse files
+Debug/
+.project
+.cproject
