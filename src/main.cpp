@@ -8,6 +8,7 @@ int main(int argc, char *argv[])
 	//Declare a socket instance here.
 	struct sockaddr_in server;
 	string address = "192.168.0.1";
+	server.sin_port = htons(1234);
 	inet_aton(address, &server.sin_addr.s_addr);
 
 	int s = socket(AF_INET, SOCK_STREAM, 0);
