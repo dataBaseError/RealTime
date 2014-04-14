@@ -21,47 +21,43 @@ TrainController::TrainController() {
 
 }
 
-string TrainController::getTrainControl(int train_id) {
+std::string TrainController::getEvents() {
+    return "request(100,view)\n";
+}
 
+std::string TrainController::getControl(int id) {
+    std::ostringstream stream;
+    stream << "request(" << id << ",control,force)" << std::endl;
+
+	return stream.str();
+}
+
+std::string TrainController::setDirection(int direction){
+    (void) direction;
 	return "";
 }
 
-string TrainController::getF1Control() {
+std::string TrainController::setSpeed(int direction){
+    (void) direction;
 	return "";
 }
 
-string TrainController::getF2Control(){
+std::string TrainController::setTrackF1(int lane){
+    (void) lane;
 	return "";
 }
 
-string TrainController::getJ1Control(){
+std::string TrainController::setTrackF2(int lane){
+    (void) lane;
 	return "";
 }
 
-string TrainController::getJ2Control(){
+std::string TrainController::setTrackJ1(int lane){
+    (void) lane;
 	return "";
 }
 
-string TrainController::setDirection(int direction){
-	return "";
-}
-
-string TrainController::setSpeed(int direction){
-	return "";
-}
-
-string TrainController::setTrackF1(int lane){
-	return "";
-}
-
-string TrainController::setTrackF2(int lane){
-	return "";
-}
-
-string TrainController::setTrackJ1(int lane){
-	return "";
-}
-
-string TrainController::setTrackJ2(int lane){
+std::string TrainController::setTrackJ2(int lane){
+    (void) lane;
 	return "";
 }

@@ -15,23 +15,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef TRAINCONTROLLER_HPP_
-#define TRAINCONTROLLER_HPP_
+#ifndef MAIN_HPP_
+#define MAIN_HPP_
 
-#include <sstream>
-#include <string>
+#include <netdb.h>     // gethostbyname, hostent
+#include <string.h>    // bzero, memmove
 
-class TrainController {
-    public:
-	    TrainController();
-        std::string getEvents();
-	    std::string getControl(int id);
-	    std::string setDirection(int direction);
-	    std::string setSpeed(int direction);
-	    std::string setTrackF1(int lane);
-	    std::string setTrackF2(int lane);
-	    std::string setTrackJ1(int lane);
-	    std::string setTrackJ2(int lane);
-};
+#include <Reader.hpp>
+#include <TrainController.hpp>
+#include <Writer.hpp>
 
-#endif /* TRAINCONTROLLER_HPP_ */
+// Declare the maximum buffer size for interacting with the socket.
+#define MAX_BUFFER_SIZE 256
+
+int open(const char* hostname, const uint16_t port);
+int tm(unsigned int ms);
+int main(int argc, char** argv);
+
+#endif /* MAIN_HPP_ */
