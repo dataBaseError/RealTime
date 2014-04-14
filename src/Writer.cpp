@@ -57,6 +57,13 @@ void Writer::process() {
 	buffer.pop();
 }
 
+void Writer::sendCommand(string value) {
+ 	buffer.push(value);
+ 	pthread_mutex_lock(&emptyMutex);
+ 	pthread_cond_signal(&empty);
+ 	pthread_mutex_unlock(&emptyMutex);
+}
+
 void Writer::release() {
 	killThread = true;
 	//copthread_cond_signal(&available);
