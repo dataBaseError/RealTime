@@ -17,14 +17,6 @@
 
 #include <TrainController.hpp>
 
-const string TrainController::F1 = "20002";
-const string TrainController::F2 = "20000";
-const string TrainController::J1 = "20001";
-const string TrainController::J2 = "20003";
-
-const string TrainController::DECODER_100 = "100";
-const string TrainController::DECODER_101 = "101";
-
 const string TrainController::TRAIN_1_ID = "1005";
 
 const string TrainController::FORWARD = "0";
@@ -37,35 +29,49 @@ TrainController::TrainController() {}
 
 string TrainController::getTrainControl(string train_id) {
     if (validateTrainId(train_id)) {
-	    return "request(" + train_id + ",control,force)";
+	    return "request(" + train_id + ",control,force)\n";
     }
 
-    return string();
+    return "\n";
 }
 
-string TrainController::watchSensors(string decoder_id) {
-	return "request(" + decoder_id + ",view)";
+string TrainController::watchSensors(int decoder_id) {
+    if (validateDecoderId(decoder_id)) {
+        ss << "request(" << decoder_id << ",view)" << endl;
+
+        string value = ss.str();
+        cleanStream();
+
+        return value;
+    }
+
+    return "\n";
 }
 
-string TrainController::getSwitchControl(string corner_id) {
+string TrainController::getSwitchControl(int corner_id) {
 	if (validateCornerId(corner_id)) {
-		return "request("+corner_id+",control,force)";
+        ss << "request(" << corner_id << ",control,force)" << endl;
+
+        string value = ss.str();
+        cleanStream();
+
+        return value;
 	}
 
-	return string();
+	return "\n";
 }
 
 string TrainController::setDirection(string direction){
 	if (direction == FORWARD || direction == BACKWARD) {
-		return "set(1005,dir[" + direction + "])";
+		return "set(1005,dir[" + direction + "])\n";
 	}
 
-	return string();
+	return "\n";
 }
 
 string TrainController::setSpeed(int speed){
 	if (speed >= 0 && speed <= 120) {
-		ss << "set(1005,speed[" << speed << "])";
+		ss << "set(1005,speed[" << speed << "])" << endl;
 
 		string value = ss.str();
 		cleanStream();
@@ -73,15 +79,20 @@ string TrainController::setSpeed(int speed){
 		return value;
 	}
 
-	return string();
+	return "\n";
 }
 
-string TrainController::setSwitch(string corner_id, string station_id) {
+string TrainController::setSwitch(int corner_id, string station_id) {
 	if (validateCornerId(corner_id) && validateStationId(station_id)) {
-		return "set(" + corner_id + ",state[" + station_id + "])";
+        ss << "set(" << corner_id << ",state[" << station_id << "])" << endl;
+
+        string value = ss.str();
+        cleanStream();
+
+        return value;
 	}
 
-	return string();
+	return "\n";
 }
 
 bool TrainController::validateTrainId(string train_id) {
@@ -92,8 +103,12 @@ bool TrainController::validateStationId(string station_id) {
 	return station_id == STATION_A || station_id == STATION_B;
 }
 
-bool TrainController::validateCornerId(string corner_id) {
-	return corner_id == F1 || corner_id == F2 || corner_id == J1 || corner_id == J2;
+bool TrainController::validateCornerId(int corner_id) {
+	return corners::F2 <= corner_id && corner_id <= corners::J2;
+}
+
+bool TrainController::validateDecoderId(int decoder_id) {
+    return decoders::DECODER_100 <= decoder_id && decoder_id <= decoders::DECODER_101;
 }
 
 void TrainController::cleanStream() {

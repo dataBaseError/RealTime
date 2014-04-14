@@ -25,23 +25,18 @@ using namespace std;
 
 class TrainController {
 
-private:
-	stringstream ss;
-
-    bool validateTrainId(string train_id);
-    bool validateStationId(string station_id);
-    bool validateCornerId(string corner_id);
-
-    void cleanStream();
-
 public:
-	static const string F1;
-	static const string F2;
-	static const string J1;
-	static const string J2;
+    enum corners {
+        F1 = 20002,
+        F2 = 20000,
+        J1 = 20001,
+        J2 = 20003
+    };
 
-	static const string DECODER_100;
-	static const string DECODER_101;
+    enum decoders {
+        DECODER_100 = 100,
+        DECODER_101 = 101
+    };
 
 	static const string TRAIN_1_ID;
 
@@ -54,12 +49,22 @@ public:
 	TrainController();
 
 	string getTrainControl(string train_id);
-	string watchSensors(string decoder_id);
-	string getSwitchControl(string corner_id);
+	string watchSensors(int decoder_id);
+	string getSwitchControl(int corner_id);
 
 	string setDirection(string direction);
 	string setSpeed(int speed);
-	string setSwitch(string corner_id, string station_id);
+	string setSwitch(int corner_id, string station_id);
+
+private:
+    stringstream ss;
+
+    bool validateTrainId(string train_id);
+    bool validateStationId(string station_id);
+    bool validateCornerId(int corner_id);
+    bool validateDecoderId(int decoder_id);
+
+    void cleanStream();
 };
 
 #endif /* TRAINCONTROLLER_HPP_ */

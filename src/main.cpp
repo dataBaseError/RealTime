@@ -71,32 +71,32 @@ int main(int argc, char** argv) {
 	// 2. Signal the writer thread to subscribe to the events.
 	//    Put the following into the buffer, and notify the writer thread:
     //    request(100,view)
-    w.sendCommand(controller.watchSensors(TrainController::DECODER_100));
+    w.sendCommand(controller.watchSensors(TrainController::decoders::DECODER_100));
 
     // 3. Get Control of F1
     //    request(20002,control,force)
-    w.sendCommand(controller.getSwitchControl(TrainController::F1));
+    w.sendCommand(controller.getSwitchControl(TrainController::corners::F1));
 
     // sleep 100 ms
     tm(100);
 
     // 4. Get Control of F2
     //    request(20000,control,force)
-    w.sendCommand(controller.getSwitchControl(TrainController::F2));
+    w.sendCommand(controller.getSwitchControl(TrainController::corners::F2));
 
     // sleep 100 ms
     tm(100);
 
     // 5. Get Control of J1
     //    request(20001,control,force)
-    w.sendCommand(controller.getSwitchControl(TrainController::J1));
+    w.sendCommand(controller.getSwitchControl(TrainController::corners::J1));
 
     // sleep 100 ms
     tm(100);
 
     // 6. Get Control of J2
     //    request(20003,control,force)
-    w.sendCommand(controller.getSwitchControl(TrainController::J2));
+    w.sendCommand(controller.getSwitchControl(TrainController::corners::J2));
 
     // 7.
 
