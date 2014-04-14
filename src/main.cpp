@@ -62,7 +62,9 @@ int main(int argc, char *argv[])
 	}
 
 	//Instantiate reader thread here; bind to connected socket.
+	Reader r;
 	//Instantiate writer thread here; bind to connected socket.
+	Writer w;
 
 	//Signal the writer thread to subscribe to the events.
 	//Put the following into the buffer, and notify the writer thread:

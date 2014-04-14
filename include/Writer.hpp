@@ -13,22 +13,28 @@ using namespace std;
 
 class Writer {
 
+	int socket_descriptor;
+	int buffer_size;
+
 public:
 
 	std::atomic<bool > killThread;
 	queue<string > buffer;
-	//std::atomic<std::string* > buffer;
-	//std::atomic<int> activeCount;
 	pthread_mutex_t emptyMutex;
 	pthread_cond_t empty;
 
 	static const int MAX_PROCESSES = 1;
 
-	Writer();
+	Writer(int socket_descriptor, int buffer_size);
 
-	//virtual void run();
-	//void run();
 	static void *run(void *param);
+
+	/**
+	 * Send a command to the socket
+	 *
+	 * @param value The command that will be sent to the socket
+	 */
+	void sendCommand(string value);
 
 	void release();
 
