@@ -92,12 +92,38 @@ int main(int argc, char** argv) {
 	//Instantiate writer thread here; bind to connected socket.
 	Writer w(s, MAX_BUFFER_SIZE);
 
-	//Signal the writer thread to subscribe to the events.
-	//Put the following into the buffer, and notify the writer thread:
+    //1. Request control of the train
+    //w.sendCommand("request(1005,control,force)\n");
+
+	//2. Signal the writer thread to subscribe to the events.
+	//   Put the following into the buffer, and notify the writer thread:
 	//w.sendCommand("request(100,view)\n");
 
+    //3. Get Control of F1
+    //w.sendCommand("request(20002,control,force)\n");
+
+    // TODO: sleep(100 ms)
+    usleep(100000);
+
+    //4. Get Control of F2
+    //w.sendCommand("request(20000,control,force)\n");
+
+    // TODO: sleep(100 ms)
+    usleep(100000);
+
+    //5. Get Control of J1
+    //w.sendCommand("request(20001,control,force)\n");
+
+    // TODO: sleep(100 ms)
+    usleep(100000);
+
+    //6. Get Control of J2
+    //w.sendCommand("request(20003,control,force)\n");
+
+    //7.
+
 	//Begin main control loop:
-	for(;;){
+	while (true) {
 		//Check if we've received something from the socket.
 		//Output it to the console.
 		cout << r.readCommand() << endl;
@@ -107,7 +133,6 @@ int main(int argc, char** argv) {
 	r.release();
 	//Join and release the writer thread.
 	w.release();
-
 
 	return 0;
 }
