@@ -25,9 +25,10 @@ using namespace std;
 
 class TrainController {
 
+private:
 	stringstream ss;
+
 public:
-    
 	static const string F1;
 	static const string F2;
 	static const string J1;
@@ -47,24 +48,18 @@ public:
 	TrainController();
 
 	string getTrainControl(string train_id);
-
 	string watchSensors(string decoder_id);
-
 	string getSwitchControl(string corner_id);
 
 	string setDirection(string direction);
-
 	string setSpeed(int speed);
-
 	string setSwitch(string corner_id, string station_id);
 
-	bool validateTrainId(string station_id);
-
+    bool validateTrainId(string train_id);
+	bool validateStationId(string station_id);
 	bool validateCornerId(string corner_id);
 
 	void cleanStream();
 };
-
-
 
 #endif /* TRAINCONTROLLER_HPP_ */

@@ -40,7 +40,7 @@ bool Reader::process() {
 	//Since this is in a thread, it's only blocking this thread.
 	int numBytes = recv(this->socket_descriptor, buffer, sizeof(buffer), 0);
 
-	if (buffer > 0) {
+	if (numBytes > 0) {
 		//If we got something in the buffer, everything's fine.
 		value[0] = buffer;
 		return true;

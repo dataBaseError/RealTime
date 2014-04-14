@@ -27,58 +27,44 @@ const string TrainController::DECODER_101 = "101";
 
 const string TrainController::TRAIN_1_ID = "1005";
 
-const string FORWARD = "0";
-const string BACKWARD = "1";
+const string TrainController::FORWARD = "0";
+const string TrainController::BACKWARD = "1";
 
-const string STATION_A = "0";
-const string STATION_B = "1";
+const string TrainController::STATION_A = "0";
+const string TrainController::STATION_B = "1";
 
-TrainController::TrainController() {
-
-}
+TrainController::TrainController() {}
 
 string TrainController::getTrainControl(string train_id) {
+    if (validateTrainId(train_id)) {
+	    return "request(" + train_id + ",control,force)";
+    }
 
-	return "request(" + train_id + ",control,force)";
+    return string();
 }
 
 string TrainController::watchSensors(string decoder_id) {
-
 	return "request(" + decoder_id + ",view)";
 }
 
 string TrainController::getSwitchControl(string corner_id) {
-
-	if(validateCornerId(corner_id)) {
+	if (validateCornerId(corner_id)) {
 		return "request("+corner_id+",control,force)";
 	}
+
 	return string();
 }
 
-/*
-string TrainController::getF2Control(){
-	return "";
-}
-
-string TrainController::getJ1Control(){
-	return "";
-}
-
-string TrainController::getJ2Control(){
-	return "";
-}*/
-
 string TrainController::setDirection(string direction){
-
-	if(direction == FORWARD || direction == BACKWARD) {
+	if (direction == FORWARD || direction == BACKWARD) {
 		return "set(1005,dir[" + direction + "])";
 	}
+
 	return string();
 }
 
 string TrainController::setSpeed(int speed){
-
-	if(speed >= 0 && speed <= 120) {
+	if (speed >= 0 && speed <= 120) {
 		ss << "set(1005,speed[" << speed << "])";
 
 		string value = ss.str();
@@ -86,18 +72,23 @@ string TrainController::setSpeed(int speed){
 
 		return value;
 	}
+
 	return string();
 }
 
 string TrainController::setSwitch(string corner_id, string station_id) {
-
-	if(validateCornerId(corner_id) && validateTrainId(station_id)) {
+	if (validateCornerId(corner_id) && validateStationId(station_id)) {
 		return "set(" + corner_id + ",state[" + station_id + "])";
 	}
+
 	return string();
 }
 
-bool TrainController::validateTrainId(string station_id) {
+bool TrainController::validateTrainId(string train_id) {
+    return train_id == TRAIN_1_ID;
+}
+
+bool TrainController::validateStationId(string station_id) {
 	return station_id == STATION_A || station_id == STATION_B;
 }
 
