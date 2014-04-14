@@ -36,8 +36,16 @@ void * Reader::run(void *param) {
 bool Reader::process() {
 	//(*value) = next value from the socket
 	// return true if the value is valid
-	value[0] = "new";
-	return true;
+	char buffer[buffer_size];
+	int numBytes = recv(this->socket_descriptor, buffer, sizeof(buffer), 0);
+	if (buffer > 0) {
+		//If we got something in the buffer, everything's fine.
+		value[0] = buffer;
+		return true;
+	} else {
+		//Otherwise, the socket got closed on us.
+		return false;
+	}
 }
 
 string Reader::readCommand() {
