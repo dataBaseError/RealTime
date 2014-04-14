@@ -24,3 +24,8 @@
 Debug/
 .project
 .cproject
+
+# binary files
+bin/
+main
+build/
