@@ -15,19 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <arpa/inet.h>
-#include <netdb.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <sys/socket.h>
-#include <sys/types.h>
-
-#include <Writer.hpp>
-#include <Reader.hpp>
-#include <unistd.h>
-
-//Declare the maximum buffer size for interacting with the socket.
-#define MAX_BUFFER_SIZE 256
+#include <main.hpp>
 
 int open(const char* hostname, const uint16_t port) {
     // The socket address
@@ -58,80 +46,70 @@ int open(const char* hostname, const uint16_t port) {
     return sockfd;
 }
 
+int tm(unsigned int ms) {
+    return usleep(ms * 1000);
+}
+
 int main(int argc, char** argv) {
     (void) argc;
     (void) argv;
 
-	//Declare a socket instance here.
-	/*struct sockaddr_in server;
-	string address = "192.168.0.1";
-	server.sin_port = htons(1234);
-	inet_aton(address., &server.sin_addr.s_addr);
-
-	//Open the socket. If it fails to bind, terminate.
-	int s = socket(AF_INET, SOCK_STREAM, 0);
-	if (s == -1) {
-		cout << "Invalid socket descriptor.";
-		return -1;
-	} else {
-		cout << "Socket bound.";
-	}
-
-	//Connect to the socket. If it fails to connect, terminate.
-	cout << "Connecting to socket on address: " << address << " port: "
-			<< server.sin_port << endl;
-	if (connect(s, (struct sockaddr *) &server, sizeof(server)) == -1) {
-		cout << "Socket connection failed.";
-		return -1;
-	}*/
-
     int s = open("192.168.0.1", 1234);
 
-	//Instantiate reader thread here; bind to connected socket.
+	// Instantiate reader thread here; bind to connected socket.
 	Reader r(s, MAX_BUFFER_SIZE);
-	//Instantiate writer thread here; bind to connected socket.
+	// Instantiate writer thread here; bind to connected socket.
 	Writer w(s, MAX_BUFFER_SIZE);
 
-    //1. Request control of the train
-    w.sendCommand("request(1005,control,force)\n");
+    // Instantiate the train controller
+    TrainController controller;
 
-	//2. Signal the writer thread to subscribe to the events.
-	//   Put the following into the buffer, and notify the writer thread:
-	w.sendCommand("request(100,view)\n");
+    // 1. Request control of the train
+    //    request(1004,control,force)
+    w.sendCommand(controller.getControl(1005));
 
-    //3. Get Control of F1
-    w.sendCommand("request(20002,control,force)\n");
+	// 2. Signal the writer thread to subscribe to the events.
+	//    Put the following into the buffer, and notify the writer thread:
+    //    request(100,view)
+    w.sendCommand(controller.getEvents());
 
-    // TODO: sleep(100 ms)
-    usleep(100000);
+    // 3. Get Control of F1
+    //    request(20002,control,force)
+    w.sendCommand(controller.getControl(20002));
 
-    //4. Get Control of F2
-    w.sendCommand("request(20000,control,force)\n");
+    // sleep 100 ms
+    tm(100);
 
-    // TODO: sleep(100 ms)
-    usleep(100000);
+    // 4. Get Control of F2
+    //    request(20000,control,force)
+    w.sendCommand(controller.getControl(2000));
 
-    //5. Get Control of J1
-    w.sendCommand("request(20001,control,force)\n");
+    // sleep 100 ms
+    tm(100);
 
-    // TODO: sleep(100 ms)
-    usleep(100000);
+    // 5. Get Control of J1
+    //    request(20001,control,force)
+    w.sendCommand(controller.getControl(20001));
 
-    //6. Get Control of J2
-    w.sendCommand("request(20003,control,force)\n");
+    // sleep 100 ms
+    tm(100);
 
-    //7.
+    // 6. Get Control of J2
+    //    request(20003,control,force)
+    w.sendCommand(controller.getControl(20003));
 
-	//Begin main control loop:
+    // 7.
+
+	// Begin main control loop:
 	while (true) {
-		//Check if we've received something from the socket.
-		//Output it to the console.
+		// Check if we've received something from the socket.
+		// Output it to the console.
 		cout << r.readCommand() << endl;
 	}
 
-	//Join and release the reader thread.
+	// Join and release the reader thread.
 	r.release();
-	//Join and release the writer thread.
+	// Join and release the writer thread.
 	w.release();
 
 	return 0;

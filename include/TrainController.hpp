@@ -27,7 +27,7 @@ class TrainController {
 
 	stringstream ss;
 public:
-
+    
 	static const string F1;
 	static const string F2;
 	static const string J1;
