@@ -25,6 +25,7 @@
 #include <atomic>
 #include <pthread.h>
 #include <unistd.h>
+#include <sys/socket.h>
 
 using namespace std;
 

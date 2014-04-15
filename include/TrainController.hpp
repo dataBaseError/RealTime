@@ -18,33 +18,51 @@
 #ifndef TRAINCONTROLLER_HPP_
 #define TRAINCONTROLLER_HPP_
 
+#include <string.h>
+#include <sstream>
+
+using namespace std;
+
 class TrainController {
 
+	stringstream ss;
 public:
+
+	static const string F1;
+	static const string F2;
+	static const string J1;
+	static const string J2;
+
+	static const string DECODER_100;
+	static const string DECODER_101;
+
+	static const string TRAIN_1_ID;
+
+	static const string FORWARD;
+	static const string BACKWARD;
+
+	static const string STATION_A;
+	static const string STATION_B;
 
 	TrainController();
 
-	string getTrainControl(int train_id);
+	string getTrainControl(string train_id);
 
-	string getF1Control();
+	string watchSensors(string decoder_id);
 
-	string getF2Control();
+	string getSwitchControl(string corner_id);
 
-	string getJ1Control();
+	string setDirection(string direction);
 
-	string getJ2Control();
+	string setSpeed(int speed);
 
-	string setDirection(int direction);
+	string setSwitch(string corner_id, string station_id);
 
-	string setSpeed(int direction);
+	bool validateTrainId(string station_id);
 
-	string setTrackF1(int lane);
+	bool validateCornerId(string corner_id);
 
-	string setTrackF2(int lane);
-
-	string setTrackJ1(int lane);
-
-	string setTrackJ2(int lane);
+	void cleanStream();
 };
 
 
