@@ -51,6 +51,8 @@ string TrainController::getSwitchControl(string corner_id) {
 	if (validateCornerId(corner_id)) {
 		return "request("+corner_id+",control,force)";
 	}
+	return string();
+}
 
 string TrainController::setDirection(string direction){
 	if (direction == FORWARD || direction == BACKWARD) {

@@ -46,7 +46,7 @@ int open(const char* hostname, const uint16_t port) {
     return sockfd;
 }
 
-int tm(unsigned int ms) {
+int tmS(unsigned int ms) {
     return usleep(ms * 1000);
 }
 
@@ -86,21 +86,21 @@ int main(int argc, char** argv) {
     w.sendCommand(controller.getSwitchControl(TrainController::F1));
 
     // sleep 100 ms
-    tm(100);
+    tmS(100);
 
     // 4. Get Control of F2
     //    request(20000,control,force)
     w.sendCommand(controller.getSwitchControl(TrainController::F2));
 
     // sleep 100 ms
-    tm(100);
+    tmS(100);
 
     // 5. Get Control of J1
     //    request(20001,control,force)
     w.sendCommand(controller.getSwitchControl(TrainController::J1));
 
     // sleep 100 ms
-    tm(100);
+    tmS(100);
 
     // 6. Get Control of J2
     //    request(20003,control,force)
@@ -178,7 +178,7 @@ int main(int argc, char** argv) {
 			// Stop at the station
 			w.sendCommand(controller.setSpeed(0));
 
-			tm(2000);
+			tmS(2000);
 		}
 	}
 

@@ -18,6 +18,9 @@
 #ifndef MAIN_HPP_
 #define MAIN_HPP_
 
+
+#include <arpa/inet.h>
+#include <sys/socket.h>
 #include <netdb.h>     // gethostbyname, hostent
 #include <string.h>    // bzero, memmove
 
@@ -29,7 +32,7 @@
 #define MAX_BUFFER_SIZE 256
 
 int open(const char* hostname, const uint16_t port);
-int tm(unsigned int ms);
+int tmS(unsigned int ms);
 int main(int argc, char** argv);
 
 #endif /* MAIN_HPP_ */
