@@ -55,19 +55,6 @@ string TrainController::getSwitchControl(string corner_id) {
 	return string();
 }
 
-/*
-string TrainController::getF2Control(){
-	return "";
-}
-
-string TrainController::getJ1Control(){
-	return "";
-}
-
-string TrainController::getJ2Control(){
-	return "";
-}*/
-
 string TrainController::setDirection(string direction){
 
 	if(direction == FORWARD || direction == BACKWARD) {

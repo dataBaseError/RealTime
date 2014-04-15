@@ -56,6 +56,14 @@ int main(int argc, char** argv) {
 
     int s = open("192.168.0.1", 1234);
 
+    string direction = TrainController::FORWARD;
+    int fastSpeed = 80;
+    int slowSpeed = 60;
+    string destination = TrainController::STATION_A;
+    string command;
+
+    int stationCounter = 0;
+
 	// Instantiate reader thread here; bind to connected socket.
 	Reader r(s, MAX_BUFFER_SIZE);
 	// Instantiate writer thread here; bind to connected socket.
@@ -102,9 +110,76 @@ int main(int argc, char** argv) {
 
 	// Begin main control loop:
 	while (true) {
-		// Check if we've received something from the socket.
-		// Output it to the console.
-		cout << r.readCommand() << endl;
+
+		if(stationCounter == 0) {
+			// Set the direction
+			w.sendCommand(controller.setDirection(direction));
+
+			// Set the speed of the train to the faster speed
+			w.sendCommand(controller.setSpeed(fastSpeed));
+		}
+
+		// Check if the train is entering the corner
+		while(true) {
+			string value = r.readCommand();
+
+			if((value == "101 state[0x1000]" && direction == TrainController::FORWARD)
+					|| (value == "101 state[0x4000]" && direction == TrainController::FORWARD)) {
+				command = controller.setSwitch(TrainController::F1, destination);
+				break;
+			}
+			else if((value == "100 state[0x2]" && direction == TrainController::FORWARD)
+					|| (value == "100 state[0x4]" && direction == TrainController::FORWARD)) {
+				command = controller.setSwitch(TrainController::F2, destination);
+				break;
+			}
+			else if((value == "101 state[0x200]" && direction == TrainController::BACKWARD)
+					|| (value == "101 state[0x400]" && direction == TrainController::BACKWARD)) {
+				command = controller.setSwitch(TrainController::J1, destination);
+				break;
+			}
+			else if((value == "100 state[0x20]" && direction == TrainController::BACKWARD)
+					|| (value == "100 state[0x20]" && direction == TrainController::BACKWARD)) {
+				command = controller.setSwitch(TrainController::J2, destination);
+				break;
+			}
+		}
+
+		// Send the command to switch the track
+		w.sendCommand(command);
+
+		// Slow down the train
+		w.sendCommand(controller.setSpeed(slowSpeed));
+
+		// Check if the train is exiting the corner
+		while(true) {
+			string value = r.readCommand();
+
+			if(value == "100 state[0x80]" || value == "100 state[0x10]"
+					|| (value == "100 state[0x8]") || (value == "100 state[0x1]")
+					|| (value == "101 state[0x2000]") || (value == "101 state[0x8000]")
+					|| (value == "101 state[0x800]") || (value == "101 state[0x100]")) {
+				command = controller.setSpeed(fastSpeed);
+				break;
+			}
+		}
+
+		// Send the command to go faster after exiting the loop
+		w.sendCommand(command);
+
+		stationCounter++;
+
+		// Check whether we have made a complete loop
+		if(stationCounter == 2) {
+
+			// Reset the loop counter
+			stationCounter = 0;
+
+			// Stop at the station
+			w.sendCommand(controller.setSpeed(0));
+
+			tm(2000);
+		}
 	}
 
 	// Join and release the reader thread.
