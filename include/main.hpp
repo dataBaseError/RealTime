@@ -23,6 +23,7 @@
 #include <sys/socket.h> // socket
 #include <netdb.h>      // gethostbyname, hostent
 #include <string.h>     // bzero, memmove
+#include <vector>
 
 #include <Reader.hpp>
 #include <TrainController.hpp>

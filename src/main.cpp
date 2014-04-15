@@ -62,6 +62,10 @@ int main(int argc, char** argv) {
     string destination = TrainController::STATION_A;
     string command;
 
+    unsigned int currentDestination = 0;
+
+    vector<vector<string> > schedule { {TrainController::STATION_A, TrainController::FORWARD}, {TrainController::STATION_B, TrainController::BACKWARD} };
+
     int stationCounter = 0;
 
     // Instantiate reader thread here; bind to connected socket.
@@ -110,6 +114,9 @@ int main(int argc, char** argv) {
 
     // Begin main control loop:
     while (true) {
+
+		direction = schedule[currentDestination][0];
+		destination = schedule[currentDestination][1];
 
         if (stationCounter == 0) {
             // Set the direction
@@ -167,6 +174,12 @@ int main(int argc, char** argv) {
 
             // Reset the loop counter
             stationCounter = 0;
+
+			currentDestination++;
+
+			if(currentDestination >= schedule.size()) {
+				break;
+			}
 
             // Stop at the station
             w.sendCommand(controller.setSpeed(0));
